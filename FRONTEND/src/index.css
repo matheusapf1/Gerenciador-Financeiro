@@ -11,6 +11,15 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+--bg-color: #1a1a1a;
+  --card-color: #2c2c2c;
+  --text-color: #f1f1f1;
+  --accent: #4caf50;
+  --danger: #e74c3c;
+  --border: #3c3c3c;
+  --gray: #999;
+  
 }
 
 a {
@@ -28,6 +37,17 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+button, input, select {
+  font-family: inherit;
 }
 
 h1 {

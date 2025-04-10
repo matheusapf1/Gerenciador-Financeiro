@@ -6,7 +6,7 @@ export default function CategoryPage() {
   const [categorias, setCategorias] = useState([]);
   const [nome, setNome] = useState("");
   const [erro, setErro] = useState(null);
-  const [editando, setEditando] = useState(null); // id da categoria sendo editada
+  const [editando, setEditando] = useState(null);
   const [nomeEditado, setNomeEditado] = useState("");
   const navigate = useNavigate();
 
@@ -59,67 +59,38 @@ export default function CategoryPage() {
   };
 
   return (
-    <div style={{ padding: "20px", color: "#fff", backgroundColor: "#1e1e1e", minHeight: "100vh" }}>
-      <button
-        onClick={() => navigate("/dashboard")}
-        style={{
-          padding: "6px 12px",
-          marginBottom: "20px",
-          backgroundColor: "#444",
-          color: "#fff",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
-      >
-        ⬅️ Voltar para o Dashboard
-      </button>
-
+    <div style={styles.container}>
+      <button onClick={() => navigate("/dashboard")} style={styles.backBtn}>⬅ Voltar</button>
       <h2>Gerenciar Categorias</h2>
 
-      <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
+      <form onSubmit={handleSubmit} style={styles.form}>
         <input
           type="text"
           placeholder="Nome da categoria"
           value={nome}
           onChange={(e) => setNome(e.target.value)}
           required
-          style={{ marginRight: "10px" }}
+          style={styles.input}
         />
-        <button type="submit">Criar</button>
+        <button type="submit" style={styles.button}>Criar</button>
       </form>
 
       {erro && <p style={{ color: "red" }}>{erro}</p>}
 
-      <h3>Categorias existentes:</h3>
-      <ul>
+      <ul style={styles.list}>
         {categorias.map((cat) => (
-          <li key={cat.id} style={{ marginBottom: "10px" }}>
+          <li key={cat.id} style={styles.item}>
             {editando === cat.id ? (
               <>
-                <input
-                  type="text"
-                  value={nomeEditado}
-                  onChange={(e) => setNomeEditado(e.target.value)}
-                  style={{ marginRight: "10px" }}
-                />
-                <button onClick={() => handleSalvarEdicao(cat.id)}>Salvar</button>
-                <button onClick={() => setEditando(null)} style={{ marginLeft: "5px" }}>
-                  Cancelar
-                </button>
+                <input value={nomeEditado} onChange={(e) => setNomeEditado(e.target.value)} style={styles.input} />
+                <button onClick={() => handleSalvarEdicao(cat.id)} style={styles.button}>Salvar</button>
+                <button onClick={() => setEditando(null)} style={styles.cancel}>Cancelar</button>
               </>
             ) : (
               <>
                 {cat.nome}
-                <button onClick={() => {
-                  setEditando(cat.id);
-                  setNomeEditado(cat.nome);
-                }} style={{ marginLeft: "10px" }}>
-                  Editar
-                </button>
-                <button onClick={() => handleExcluir(cat.id)} style={{ marginLeft: "5px" }}>
-                  Excluir
-                </button>
+                <button onClick={() => { setEditando(cat.id); setNomeEditado(cat.nome); }} style={styles.button}>Editar</button>
+                <button onClick={() => handleExcluir(cat.id)} style={styles.cancel}>Excluir</button>
               </>
             )}
           </li>
@@ -128,3 +99,60 @@ export default function CategoryPage() {
     </div>
   );
 }
+
+const styles = {
+  container: {
+    padding: '20px',
+    backgroundColor: '#121212',
+    color: '#fff',
+    minHeight: '100vh'
+  },
+  backBtn: {
+    backgroundColor: '#444',
+    color: '#fff',
+    padding: '6px 12px',
+    borderRadius: '4px',
+    marginBottom: '20px',
+    border: 'none',
+    cursor: 'pointer'
+  },
+  form: {
+    display: 'flex',
+    gap: '10px',
+    marginBottom: '20px'
+  },
+  input: {
+    padding: '10px',
+    borderRadius: '4px',
+    backgroundColor: '#2a2a2a',
+    color: '#fff',
+    border: '1px solid #444'
+  },
+  button: {
+    backgroundColor: '#4caf50',
+    color: '#fff',
+    padding: '8px 12px',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer'
+  },
+  cancel: {
+    backgroundColor: '#c0392b',
+    color: '#fff',
+    padding: '8px 12px',
+    marginLeft: '5px',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer'
+  },
+  list: {
+    listStyle: 'none',
+    padding: 0
+  },
+  item: {
+    backgroundColor: '#1f1f1f',
+    padding: '12px',
+    marginBottom: '10px',
+    borderRadius: '4px'
+  }
+};

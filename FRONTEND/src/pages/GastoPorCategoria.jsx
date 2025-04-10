@@ -13,24 +13,18 @@ export default function GastoPorCategoria() {
         const res = await axios.get("http://localhost:3001/dashboard/gasto-por-categoria");
         setGastos(res.data);
       } catch (err) {
-        console.error("Erro ao buscar gastos por categoria:", err);
         setErro("Erro ao carregar dados.");
+        console.error(err);
       }
     };
-
     fetchGastos();
   }, []);
 
   return (
     <div style={styles.container}>
-      <button onClick={() => navigate('/dashboard')} style={styles.backButton}>
-        ⬅️ Voltar
-      </button>
-
+      <button onClick={() => navigate('/dashboard')} style={styles.backBtn}>⬅ Voltar</button>
       <h2 style={styles.title}>Gastos por Categoria</h2>
-
-      {erro && <p style={{ color: "red" }}>{erro}</p>}
-
+      {erro && <p style={styles.error}>{erro}</p>}
       {gastos.length === 0 ? (
         <p style={styles.empty}>Nenhum dado encontrado.</p>
       ) : (
@@ -38,9 +32,7 @@ export default function GastoPorCategoria() {
           {gastos.map((item, index) => (
             <li key={index} style={styles.item}>
               <strong>{item.categoria?.nome || "Categoria Desconhecida"}</strong>
-              <span style={styles.valor}>
-                R$ {(item._sum?.valor || 0).toFixed(2)}
-              </span>
+              <span style={styles.valor}>R$ {(item._sum?.valor || 0).toFixed(2)}</span>
             </li>
           ))}
         </ul>
@@ -52,26 +44,26 @@ export default function GastoPorCategoria() {
 const styles = {
   container: {
     padding: '20px',
-    backgroundColor: '#1e1e1e',
+    backgroundColor: '#121212',
     color: '#fff',
-    minHeight: '100vh',
+    minHeight: '100vh'
   },
-  backButton: {
+  backBtn: {
     backgroundColor: '#444',
     color: '#fff',
-    border: 'none',
     padding: '8px 12px',
-    borderRadius: '5px',
+    border: 'none',
+    borderRadius: '4px',
     marginBottom: '20px',
-    cursor: 'pointer',
+    cursor: 'pointer'
   },
   title: {
     fontSize: '24px',
-    marginBottom: '20px',
+    marginBottom: '20px'
   },
   list: {
     listStyle: 'none',
-    padding: 0,
+    padding: 0
   },
   item: {
     backgroundColor: '#2a2a2a',
@@ -79,12 +71,15 @@ const styles = {
     marginBottom: '10px',
     borderRadius: '5px',
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
   },
   valor: {
-    color: '#bbb',
+    color: '#ccc'
   },
   empty: {
-    color: '#ccc',
+    color: '#888'
   },
+  error: {
+    color: 'red'
+  }
 };

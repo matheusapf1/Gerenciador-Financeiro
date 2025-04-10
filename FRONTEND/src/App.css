@@ -40,3 +40,42 @@
 .read-the-docs {
   color: #888;
 }
+
+.dashboard-cards {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.card {
+  padding: 1.5rem;
+  border-radius: 8px;
+  background-color: #f4f4f4;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  flex: 1;
+  text-align: center;
+}
+
+.card-saldo {
+  background-color: #d1f5d3;
+}
+
+.card-gasto {
+  background-color: #fddddd;
+}
+
+.top-despesas {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.top-despesas ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.top-despesas li {
+  margin-bottom: 0.5rem;
+}

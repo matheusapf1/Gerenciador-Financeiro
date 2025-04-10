@@ -20,11 +20,10 @@ export default function PurchaseForm({ onCreated }) {
         const res = await axios.get("http://localhost:3001/categorias");
         setCategorias(res.data);
       } catch (err) {
-        console.error("Erro ao carregar categorias:", err);
         setErro("Erro ao carregar categorias.");
+        console.error(err);
       }
     }
-
     fetchCategorias();
   }, []);
 
@@ -40,27 +39,18 @@ export default function PurchaseForm({ onCreated }) {
     e.preventDefault();
     setMensagem("");
     setErro("");
-
     try {
       await axios.post("http://localhost:3001/compras", {
         ...form,
         valor: parseFloat(form.valor),
         categoriaId: parseInt(form.categoriaId),
       });
-
-      setForm({
-        item: "",
-        valor: "",
-        data: "",
-        categoriaId: "",
-        recorrente: false,
-      });
-
-      setMensagem("Compra cadastrada com sucesso!");
+      setForm({ item: "", valor: "", data: "", categoriaId: "", recorrente: false });
+      setMensagem("✅ Compra cadastrada com sucesso!");
       if (onCreated) onCreated();
     } catch (err) {
-      console.error("Erro ao cadastrar compra:", err);
-      setErro("Erro ao cadastrar compra.");
+      console.error(err);
+      setErro("❌ Erro ao cadastrar compra.");
     }
   };
 
@@ -68,64 +58,30 @@ export default function PurchaseForm({ onCreated }) {
     <form onSubmit={handleSubmit} style={styles.form}>
       <h3 style={styles.title}>Nova Compra</h3>
 
-      <input
-        type="text"
-        name="item"
-        placeholder="Descrição do item"
-        value={form.item}
-        onChange={handleChange}
-        style={styles.input}
-        required
-      />
+      <input type="text" name="item" placeholder="Item" value={form.item}
+        onChange={handleChange} style={styles.input} required />
 
-      <input
-        type="number"
-        name="valor"
-        placeholder="Valor"
-        value={form.valor}
-        onChange={handleChange}
-        style={styles.input}
-        required
-      />
+      <input type="number" name="valor" placeholder="Valor" value={form.valor}
+        onChange={handleChange} style={styles.input} required />
 
-      <input
-        type="date"
-        name="data"
-        value={form.data}
-        onChange={handleChange}
-        style={styles.input}
-        required
-      />
+      <input type="date" name="data" value={form.data}
+        onChange={handleChange} style={styles.input} required />
 
-      <select
-        name="categoriaId"
-        value={form.categoriaId}
-        onChange={handleChange}
-        style={styles.input}
-        required
-      >
+      <select name="categoriaId" value={form.categoriaId}
+        onChange={handleChange} style={styles.input} required>
         <option value="">Selecione uma categoria</option>
         {categorias.map((cat) => (
-          <option key={cat.id} value={cat.id}>
-            {cat.nome}
-          </option>
+          <option key={cat.id} value={cat.id}>{cat.nome}</option>
         ))}
       </select>
 
-      <label style={styles.checkboxLabel}>
-        <input
-          type="checkbox"
-          name="recorrente"
-          checked={form.recorrente}
-          onChange={handleChange}
-          style={{ marginRight: "8px" }}
-        />
+      <label style={styles.checkbox}>
+        <input type="checkbox" name="recorrente"
+          checked={form.recorrente} onChange={handleChange} />
         Compra recorrente?
       </label>
 
-      <button type="submit" style={styles.button}>
-        Cadastrar
-      </button>
+      <button type="submit" style={styles.button}>Cadastrar</button>
 
       {mensagem && <p style={styles.success}>{mensagem}</p>}
       {erro && <p style={styles.error}>{erro}</p>}
@@ -141,11 +97,12 @@ const styles = {
     padding: "20px",
     borderRadius: "8px",
     maxWidth: "400px",
-    marginBottom: "20px",
     color: "#fff",
+    marginBottom: "30px"
   },
   title: {
     marginBottom: "15px",
+    fontSize: "18px"
   },
   input: {
     padding: "10px",
@@ -155,26 +112,26 @@ const styles = {
     backgroundColor: "#2a2a2a",
     color: "#fff",
   },
-  checkboxLabel: {
+  checkbox: {
     marginBottom: "15px",
     display: "flex",
     alignItems: "center",
-    fontSize: "14px",
+    gap: "10px"
   },
   button: {
-    padding: "10px 15px",
+    padding: "10px",
     backgroundColor: "#444",
     color: "#fff",
     border: "none",
     borderRadius: "4px",
-    cursor: "pointer",
+    cursor: "pointer"
   },
   success: {
     color: "lightgreen",
-    marginTop: "10px",
+    marginTop: "10px"
   },
   error: {
     color: "red",
-    marginTop: "10px",
-  },
+    marginTop: "10px"
+  }
 };
