@@ -13,7 +13,7 @@ const DashboardCards = () => {
         const gastoRes = await axios.get('http://localhost:3001/dashboard/gasto-total');
 
         setSaldo(saldoRes.data?.saldo ?? null);
-        setGastoTotal(gastoRes.data?.gastoTotal ?? null);
+        setGastoTotal(gastoRes.data?._sum?.valor ?? null);
       } catch (err) {
         console.error('Erro ao buscar saldo ou gasto total:', err);
       }

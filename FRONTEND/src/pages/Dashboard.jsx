@@ -10,6 +10,9 @@ function Dashboard() {
   const [error, setError] = useState(null);
   const [mes, setMes] = useState(new Date().getMonth() + 1);
   const [ano, setAno] = useState(new Date().getFullYear());
+  const [editando, setEditando] = useState(null);
+  const [editItem, setEditItem] = useState('');
+  const [editValor, setEditValor] = useState('');
   const navigate = useNavigate();
 
   const fetchCompras = async () => {
@@ -41,6 +44,42 @@ function Dashboard() {
     navigate('/login');
   };
 
+  const iniciarEdicao = (compra) => {
+    setEditando(compra.id);
+    setEditItem(compra.item);
+    setEditValor(compra.valor);
+  };
+
+  const salvarEdicao = async (id) => {
+    try {
+      await fetch(`http://localhost:3001/compras/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          item: editItem,
+          valor: parseFloat(editValor),
+        }),
+      });
+      setEditando(null);
+      fetchCompras();
+    } catch (err) {
+      console.error("Erro ao editar compra:", err);
+    }
+  };
+
+  const excluirCompra = async (id) => {
+    if (confirm('Tem certeza que deseja excluir esta compra?')) {
+      try {
+        await fetch(`http://localhost:3001/compras/${id}`, {
+          method: 'DELETE',
+        });
+        fetchCompras();
+      } catch (err) {
+        console.error("Erro ao excluir compra:", err);
+      }
+    }
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.header}>
@@ -52,10 +91,7 @@ function Dashboard() {
         </div>
       </div>
 
-      {/* 🔥 Adicionado os cards de saldo e gasto total */}
       <DashboardCards />
-
-      {/* 🔥 Adicionado o Top 5 despesas */}
       <TopDespesas />
 
       <div style={styles.filtros}>
@@ -85,9 +121,33 @@ function Dashboard() {
             <ul style={styles.list}>
               {compras.map((compra) => (
                 <li key={compra.id} style={styles.listItem}>
-                  <strong>{compra.item}</strong> - R$ {compra.valor.toFixed(2)}<br />
-                  <span style={styles.date}>{new Date(compra.data).toLocaleDateString()}</span>
-                  {compra.recorrente && <span style={styles.tag}>Recorrente</span>}
+                  {editando === compra.id ? (
+                    <>
+                      <input
+                        type="text"
+                        value={editItem}
+                        onChange={(e) => setEditItem(e.target.value)}
+                        style={styles.inputEdit}
+                      />
+                      <input
+                        type="number"
+                        value={editValor}
+                        onChange={(e) => setEditValor(e.target.value)}
+                        style={styles.inputEdit}
+                      />
+                      <button onClick={() => salvarEdicao(compra.id)} style={styles.saveBtn}>Salvar</button>
+                      <button onClick={() => setEditando(null)} style={styles.cancelBtn}>Cancelar</button>
+                    </>
+                  ) : (
+                    <>
+                      <strong>{compra.item}</strong> - R$ {compra.valor.toFixed(2)}<br />
+                      <span style={styles.date}>{new Date(compra.data).toLocaleDateString()}</span>
+                      {compra.recorrente && <span style={styles.tag}>Recorrente</span>}
+                      <br />
+                      <button onClick={() => iniciarEdicao(compra)} style={styles.editBtn}>✏️</button>
+                      <button onClick={() => excluirCompra(compra.id)} style={styles.deleteBtn}>🗑</button>
+                    </>
+                  )}
                 </li>
               ))}
             </ul>
@@ -158,6 +218,49 @@ const styles = {
     padding: '2px 6px',
     borderRadius: '3px',
     color: '#ccc'
+  },
+  inputEdit: {
+    marginBottom: '8px',
+    marginRight: '10px',
+    padding: '6px',
+    borderRadius: '4px',
+    border: '1px solid #333',
+    backgroundColor: '#1e1e1e',
+    color: '#fff',
+  },
+  editBtn: {
+    backgroundColor: '#007bff',
+    color: '#fff',
+    border: 'none',
+    padding: '5px 10px',
+    borderRadius: '4px',
+    marginRight: '5px',
+    cursor: 'pointer',
+  },
+  deleteBtn: {
+    backgroundColor: '#dc3545',
+    color: '#fff',
+    border: 'none',
+    padding: '5px 10px',
+    borderRadius: '4px',
+    cursor: 'pointer',
+  },
+  saveBtn: {
+    backgroundColor: '#28a745',
+    color: '#fff',
+    border: 'none',
+    padding: '5px 10px',
+    borderRadius: '4px',
+    marginRight: '5px',
+    cursor: 'pointer',
+  },
+  cancelBtn: {
+    backgroundColor: '#6c757d',
+    color: '#fff',
+    border: 'none',
+    padding: '5px 10px',
+    borderRadius: '4px',
+    cursor: 'pointer',
   }
 };
 
