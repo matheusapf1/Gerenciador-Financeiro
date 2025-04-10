@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  password  String
+
+  compras   Compra[]
+  contas    Conta[]
+  cartoes   Cartao[]
+  entradas  Entrada[]
+}
+
+model Compra {
+  id          Int       @id @default(autoincrement())
+  item        String
+  valor       Float
+  data        DateTime
+  categoriaId Int
+  userId      Int
+  recorrente  Boolean   @default(false) //
+  categoria   Categoria @relation(fields: [categoriaId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
+}
+
+
+model Categoria {
+  id       Int      @id @default(autoincrement())
+  nome     String
+  compras  Compra[] // ← uma categoria pode ter várias compras
+}
+
+model Conta {
+  id         Int         @id @default(autoincrement())
+  nome       String
+  tipo       String
+  saldo      Float       @default(0)
+  userId     Int
+  user       User        @relation(fields: [userId], references: [id])
+  transacoes Transacao[]
+}
+
+model Cartao {
+  id        Int       @id @default(autoincrement())
+  nome      String
+  bandeira  String
+  limite    Float
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+  faturas   Fatura[]
+}
+
+model Transacao {
+  id         Int       @id @default(autoincrement())
+  tipo       String    // 'entrada' ou 'saida'
+  valor      Float
+  descricao  String
+  categoria  String
+  data       DateTime  @default(now())
+  contaId    Int
+  conta      Conta     @relation(fields: [contaId], references: [id])
+}
+
+model Fatura {
+  id        Int      @id @default(autoincrement())
+  mes       String   // exemplo: '2024-04'
+  total     Float    @default(0)
+  cartaoId  Int
+  cartao    Cartao   @relation(fields: [cartaoId], references: [id])
+}
+
+model Entrada {
+  id        Int      @id @default(autoincrement())
+  valor     Float
+  data      DateTime
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+}
+
